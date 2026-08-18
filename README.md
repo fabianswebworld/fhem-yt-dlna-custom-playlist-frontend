@@ -1,6 +1,8 @@
 # fhem-yt-dlna-custom-playlist-frontend
 Small helper module for FHEM. Generates dynamic JSON playlists (Custom Playlists) for yt-dlna from FHEM readings. Makes it possible to control your FHEM Home Automation system via the media menu of your UPnP/DLNA client.
 
+An example .json file which you can use as a template for your "Custom Playlist" file in yt-dlna is included in this repository (fhem_example.json). The `url` and `name` keys will be updated with the appropriate readings and FHEM command URLs from the `fhem_title` and `fhem_cmd` templates by this module in regular intervals. That is effectively all it does. The rest is accomplished by [yt-dlna](https://github.com/fabianswebworld/yt-dlna), which is necessary for this to work (don't forget to register the .json file as a "Custom Playlist" in yt-dlna's configuration; the playlist_file path must be writeble by the FHEM Perl module 98_ytdlnaCustomPlaylistFrontend.pm).
+
 ### 98_ytdlnaCustomPlaylistFrontend.pm
 
 This module reads a JSON file (template), processes tokens like `{Device:Reading:Property|Default}`, generates FHEM command URLs and writes the result back to the file. It is designed to work with the **yt-dlna** UPnP server to provide a dynamic DLNA folder structure.  
