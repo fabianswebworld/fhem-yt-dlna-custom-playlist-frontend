@@ -1,0 +1,67 @@
+{
+    "mode": "hit",
+    "children": [
+        {
+            "type": "folder",
+            "name": "Lamps",
+            "mode": "",
+            "children": [
+                {
+                    "type": "item",
+                    "name": "Living Room Light",
+                    "mode": "",
+                    "url": "#",
+                    "fhem_title": "Living Room Light: {Living_Room_Light:state}",
+                    "fhem_cmd": "set Living_Room_Light toggle"
+                },
+                {
+                    "type": "item",
+                    "name": "Dining Room Light",
+                    "mode": "",
+                    "url": "#",
+                    "fhem_title": "Dining Room Light: {Dining_Room_Light:state}",
+                    "fhem_cmd": "set Dining_Room_Light toggle"
+                },
+                {
+                    "type": "item",
+                    "name": "Bedroom Light",
+                    "mode": "",
+                    "url": "#",
+                    "fhem_title": "Bedroom Light: {Bedroom_Light:state}",
+                    "fhem_cmd": "set Bedroom_Light toggle"
+                }
+            ]
+        },
+        {
+            "type": "folder",
+            "name": "Sensores",
+            "mode": "",
+            "children": [
+                {
+                    "type": "item",
+                    "name": "Balcony",
+                    "mode": "",
+                    "url": "#",
+                    "fhem_title": "Balcony: {Sensor_Balcony:temperature} °C / {Sensor_Balcony:humidity} %  ({Sensor_Balcony:temperature:time})",
+                    "fhem_cmd": ""
+                },
+                {
+                    "type": "item",
+                    "name": "Livng Room",
+                    "mode": "",
+                    "url": "#",
+                    "fhem_title": "Livng Room: {Sensor_LivingRoom:temperature} °C / {Sensor_LivingRoom:humidity} %  ({Sensor_LivingRoom:temperature:time})",
+                    "fhem_cmd": ""
+                },
+                {
+                    "type": "item",
+                    "name": "Bedroom",
+                    "mode": "",
+                    "url": "#",
+                    "fhem_title": "Bedroom: {Sensor_Bedroom:temperature} °C / {Sensor_Bedroom:humidity} %  ({Sensor_Bedroom:temperature:time})",
+                    "fhem_cmd": ""
+                }
+            ]
+        }
+    ]
+}
