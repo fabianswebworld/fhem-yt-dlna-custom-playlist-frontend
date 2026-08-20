@@ -1,9 +1,30 @@
 # fhem-yt-dlna-custom-playlist-frontend
+
 Small helper module for FHEM. Generates dynamic JSON playlists (Custom Playlists) for yt-dlna from FHEM readings. Makes it possible to control your FHEM Home Automation system via the media menu of your UPnP/DLNA client.
 
-An example .json file which you can use as a template for your "Custom Playlist" file in yt-dlna is included in this repository (fhem_example.json). The `url` and `name` keys will be updated with the appropriate readings and FHEM command URLs from the `fhem_title` and `fhem_cmd` templates by this module in regular intervals. That is effectively all it does. The rest is accomplished by [yt-dlna](https://github.com/fabianswebworld/yt-dlna), which is necessary for this to work (don't forget to register the .json file as a "Custom Playlist" in yt-dlna's configuration; the playlist_file path must be writeble by the FHEM Perl module 98_ytdlnaCustomPlaylistFrontend.pm).
+An example .json file which you can use as a template for your "Custom Playlist" file in yt-dlna is included in this repository (fhem_example.json). The `url` and `name` keys will be updated with the appropriate readings and FHEM command URLs from the `fhem_title` and `fhem_cmd` templates by this module in regular intervals. That is effectively all it does. The rest is accomplished by [yt-dlna](https://github.com/fabianswebworld/yt-dlna), which is necessary for this to work (don't forget to register the .json file as a "Custom Playlist" in yt-dlna's configuration; the playlist_file path must be writeble by the FHEM Perl module `98_ytdlnaCustomPlaylistFrontend.pm`).
 
-### 98_ytdlnaCustomPlaylistFrontend.pm
+## Getting Started
+
+To use this module, simply place the file `98_ytdlnaCustomPlaylistFrontend.pm` into your FHEM modules directory (usually `/opt/fhem/FHEM/`) and define a new device of type `ytdlnaCustomPlaylistFrontend`, like so (from the FHEM command line):
+
+`define my_ytdlna ytdlnaCustomPlaylistFrontend`
+
+You will then see the device in your FHEMWEB UI under the "Unsorted" or "Everything" rooms; you can then use this to set the appropriate attributes.
+
+Or, if you prefer, define it via manual editing of `fhem.cfg` and reload the configuration (or restart FHEM) afterwards. An example definion block of a `ytdlnaCustomPlaylistFrontend`n might look like this:
+
+```
+define my_ytdlna ytdlnaCustomPlaylistFrontend
+attr my_ytdlna fhem_instance_host fhem-hostname
+attr my_ytdlna fhem_instance_port 8083
+attr my_ytdlna fhem_fwcsrf 0affe724205e23cafe0201349
+attr my_ytdlna playlist_file /home/pi/yt-dlna/data/fhem.json
+attr my_ytdlna playlist_update_interval 300
+attr my_ytdlna replace_list on,an|off,aus|open,auf|close,zu
+```
+
+## Module documentation (commandref) of *98_ytdlnaCustomPlaylistFrontend.pm*
 
 This module reads a JSON file (template), processes tokens like `{Device:Reading:Property|Default}`, generates FHEM command URLs and writes the result back to the file. It is designed to work with the **yt-dlna** UPnP server to provide a dynamic DLNA folder structure.  
   
