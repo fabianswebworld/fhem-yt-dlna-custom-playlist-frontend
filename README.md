@@ -4,6 +4,8 @@ Small helper module for FHEM. Generates dynamic JSON playlists (Custom Playlists
 
 An example .json file which you can use as a template for your "Custom Playlist" file in yt-dlna is included in this repository (fhem_example.json). The `url` and `name` keys will be updated with the appropriate readings and FHEM command URLs from the `fhem_title` and `fhem_cmd` templates by this module in regular intervals. That is effectively all it does. The rest is accomplished by [yt-dlna](https://github.com/fabianswebworld/yt-dlna), which is necessary for this to work (don't forget to register the .json file as a "Custom Playlist" in yt-dlna's configuration; the playlist_file path must be writeble by the FHEM Perl module `98_ytdlnaCustomPlaylistFrontend.pm`).
 
+The playlist file is only re-written if at least one reading or reading timestamp has changed (but excluding its own update timestamp; so it will not write the file only to update the timestamp when it was last updated; this is to save write cycles on flash memory).
+
 ## Getting Started
 
 To use this module, simply place the file `98_ytdlnaCustomPlaylistFrontend.pm` into your FHEM modules directory (usually `/opt/fhem/FHEM/`) and define a new device of type `ytdlnaCustomPlaylistFrontend`, like so (from the FHEM command line):
@@ -16,6 +18,7 @@ Or, if you prefer, define it via manual editing of `fhem.cfg` and reload the con
 
 ```
 define my_ytdlna ytdlnaCustomPlaylistFrontend
+attr my_ytdlna alias yt-dlna Custom Playlist Frontend
 attr my_ytdlna fhem_instance_host fhem-hostname
 attr my_ytdlna fhem_instance_port 8083
 attr my_ytdlna fhem_fwcsrf 0affe724205e23cafe0201349

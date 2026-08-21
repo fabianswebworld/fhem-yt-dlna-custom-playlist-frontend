@@ -2,7 +2,7 @@
 # 98_ytdlnaCustomPlaylistFrontend.pm
 # Generates dynamic JSON playlists for yt-dlna from FHEM readings
 #
-# Version: 1.0.0 (2026-08-19)
+# Version: 1.0.1 (2026-08-21)
 #
 # Copyright (c) 2026 Fabian Schneider (@fabianswebworld) and contributors
 # Licensed under the MIT License - see LICENSE file for details.
@@ -78,7 +78,7 @@ sub ytdlnaCustomPlaylistFrontend_UpdateFile {
     my $file = AttrVal($name, "playlist_file", undef);
 
     if (!$file || !-e $file) {
-        readingsSingleUpdate($hash, "state", "error: file not found", 1);
+        readingsSingleUpdate($hash, "state", "Error: Playlist file not found", 1);
         return;
     }
 
@@ -91,19 +91,40 @@ sub ytdlnaCustomPlaylistFrontend_UpdateFile {
         if ($content) {
             eval {
                 my $data = decode_json($content);
-                $hash->{HELPER}{LAST_UPDATE} = time();
+                
+                $hash->{HELPER}{LAST_UPDATE} //= time();
+                
                 ytdlnaCustomPlaylistFrontend_ProcessNodes($hash, $data);
                 
+                # intermediate step: new json with old update timestamps
                 my $json_out = JSON->new->utf8->pretty->encode($data);
-                seek($fh, 0, 0);
-                truncate($fh, 0);
-                print $fh $json_out;
                 
-                readingsSingleUpdate($hash, "state", "updated " . localtime(), 1);
+                # compare contents to avoid unnecessary writes
+                my $old_cmp = $content;
+                my $new_cmp = $json_out;
+                $old_cmp =~ s/^\s+|\s+$//g;
+                $new_cmp =~ s/^\s+|\s+$//g;
+                
+                if ($old_cmp eq $new_cmp) {
+                    Log3 $name, 4, "$name: No changes detected, skipping write operation.";
+                    readingsSingleUpdate($hash, "state", "Update skipped (no changes)", 1);
+                } else {
+                    $hash->{HELPER}{LAST_UPDATE} = time();
+                    
+                    ytdlnaCustomPlaylistFrontend_ProcessNodes($hash, $data);
+                    $json_out = JSON->new->utf8->pretty->encode($data);
+                    
+                    seek($fh, 0, 0);
+                    truncate($fh, 0);
+                    print $fh $json_out;
+                    
+                    readingsSingleUpdate($hash, "state", "Updated " . localtime(), 1);
+                    Log3 $name, 4, "$name: Changes detected, playlist file updated.";
+                }
             };
             if ($@) {
                 Log3 $name, 2, "$name: JSON Error: $@";
-                readingsSingleUpdate($hash, "state", "error: invalid json", 1);
+                readingsSingleUpdate($hash, "state", "Error: invalid json", 1);
             }
         }
         close($fh);
